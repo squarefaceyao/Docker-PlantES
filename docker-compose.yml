@@ -32,7 +32,7 @@ services:
       context: ./app
       dockerfile: Dockerfile
     ports:
-      - "28080:8080"
+      - "28080:8080" # 28080是spring boot报漏的端口
     restart: always
     environment: # 设置环境变量
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/myplant?useUnicode=true&characterEncoding=utf-8
