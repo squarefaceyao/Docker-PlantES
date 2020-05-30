@@ -1,0 +1,56 @@
+version: '2.0'
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "13306:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: myplant
+      MYSQL_ROOT_PASSWORD: y13453951660J
+    #    volumes:
+    #      - mysql-data:/var/lib/mysql
+    networks:
+      - plant
+  hbase:
+    image: harisekhon/hbase:1.2
+    hostname: hbase
+    restart: always
+    #    ports:
+    #      - "9095:9095"
+    #      - "8085:8085"
+
+    networks:
+      - plant
+      #    volumes:
+      #      - hbase_data:/data
+  app:
+    image: demo:1.0.0
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "28080:8080"
+    restart: always
+    environment: # 设置环境变量
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/myplant?useUnicode=true&characterEncoding=utf-8
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: y13453951660J
+      HBASE.QUORUM: hbase
+      HBASE.CLIENTPORT: 2181
+      HBASE.ROOTDIR: hdfs://hbase:9000/hbase
+    depends_on:
+      - mysql
+      - hbase
+    networks:
+      - plant
+
+volumes:
+  hbase-data:
+  mysql-data:
+
+networks:
+  plant:
+
